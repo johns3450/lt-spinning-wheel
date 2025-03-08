@@ -1,0 +1,14 @@
+<svg width="100%" height="100%" viewBox="-200 -140 500 280" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="gold-gradient" cx="50%" cy="50%" r="80%">
+      <stop offset="0%" stop-color="#f7e98e"/>
+      <stop offset="50%" stop-color="#d7ad05"/>
+      <stop offset="100%" stop-color="#8b5a2b"/>
+    </radialGradient>
+  </defs>
+
+  <g transform="translate(50, -92.5)">
+    <path d="M-120,65 A190,190 0 0,1 120,65 L85,120 A120,120 0 0,0 -85,120 Z"
+          fill="url(#gold-gradient)" stroke="#ffffff" stroke-width="1"/>
+  </g>
+</svg>

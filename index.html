@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>3D Spinning Wheel</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+<body>
+  <div id="loading-screen">
+    <div class="loader">
+      <div class="outer-spinner"></div>
+      <div class="inner-spinner"></div>
+    </div>
+  </div>
+  <div class="bg-animated-gradient"></div>
+  <div class="bg-animated-gradient-2"></div>
+  <div class="page-layout">
+    <div class="left-column">
+      <div class="line line-1"></div>
+      <div class="line line-2"></div>
+      <div class="line line-3"></div>
+    </div>
+  <div class="center-column">
+    <div class="total-game-container">
+<div class="game-unit-container">
+  <div class="header-logo-image">
+    <img src="https://freespinking.com/wp-content/uploads/2025/03/Free-Spin-King-Logo-34.png" alt="Free Spin King Logo">
+  </div>
+  <div class="header-logo-background"></div>
+  <div class="header-logo-shadow"></div>
+  <div class="segment-overlay">
+    <svg width="400px" height="300px" viewBox="-350 -250 700 500" xmlns="http://www.w3.org/2000/svg"
+         xmlns:xlink="http://www.w3.org/1999/xlink">
+      
+      <defs>
+        @font-face {
+            font-family: 'Savory Curry';
+            src: url('Savory-Curry.otf') format('opentype'),
+                 url('Savory-Curry.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+          }
+          
+  
+        <path id="textCurve" d="M-280,110 A420,380 0 0,1 280,110" fill="none"/>
+      </defs>
+  
+      <text class="segment-text" font-size="110" fill="#ffffff" stroke="#15410a" stroke-width="4">
+        <textPath xlink:href="#textCurve" startOffset="50%" text-anchor="middle">
+          LUCK O' THE
+        </textPath>
+      </text>
+    </svg>
+  </div>
+  <div class="segment-overlay-2">
+    <svg width="400px" height="300px" viewBox="-350 -250 700 500" xmlns="http://www.w3.org/2000/svg"
+         xmlns:xlink="http://www.w3.org/1999/xlink">
+      
+      <defs>
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap');
+            text {
+              font-family: 'Irish Grover', sans-serif;
+            }
+          </style>
+          
+  
+        <path id="textCurve" d="M-280,110 A420,380 0 0,1 280,110" fill="none"/>
+      </defs>
+  
+      <text class="segment-text-2" font-size="110" fill="#ffffff" stroke="#15410a" stroke-width="4">
+        <textPath xlink:href="#textCurve" startOffset="50%" text-anchor="middle">
+          IRISH
+        </textPath>
+      </text>
+    </svg>
+  </div>
+<div class="header-container">
+  <img src="segment.svg" class="segment-shape" alt="Segment Shape">
+  <img src="segment-2.svg" class="segment-shape-2" alt="Segment Shape 2">
+</div>
+  <div class="game-container">
+    <div class="wheel-container">
+      <div class="ticker"></div>
+      <div class="wheel-rotate" id="wheel">
+        <div class="outer-ring"></div>
+        <div class="segments"></div>
+  <div class="segment-line" style="--angle: 0deg;"></div>
+  <div class="segment-line" style="--angle: 45deg;"></div>
+  <div class="segment-line" style="--angle: 90deg;"></div>
+  <div class="segment-line" style="--angle: 135deg;"></div>
+  <div class="segment-line" style="--angle: 180deg;"></div>
+  <div class="segment-line" style="--angle: 225deg;"></div>
+  <div class="segment-line" style="--angle: 270deg;"></div>
+  <div class="segment-line" style="--angle: 315deg;"></div>
+        <div class="pin" style="--pin-angle: 0deg;"></div>
+        <div class="pin" style="--pin-angle: 45deg;"></div>
+        <div class="pin" style="--pin-angle: 90deg;"></div>
+        <div class="pin" style="--pin-angle: 135deg;"></div>
+        <div class="pin" style="--pin-angle: 180deg;"></div>
+        <div class="pin" style="--pin-angle: 225deg;"></div>
+        <div class="pin" style="--pin-angle: 270deg;"></div>
+        <div class="pin" style="--pin-angle: 315deg;"></div>
+        <div class="segment-label-container" style="--angle: 22.5deg;">
+            <div class="segment-label">500</div>
+            <div class="segment-subtext">SPINS</div>
+        </div>
+        <div class="segment-label-container" style="--angle: 67.5deg;">
+            <div class="segment-label">20</div>
+            <div class="segment-subtext">SPINS</div>
+        </div>
+        <div class="segment-label-container" style="--angle: 112.5deg;">
+            <div class="segment-label">10</div>
+            <div class="segment-subtext">SPINS</div>
+        </div>
+        <div class="segment-label-container" style="--angle: 157.5deg;">
+            <div class="segment-label">200</div>
+            <div class="segment-subtext">SPINS</div>
+        </div>
+        <div class="segment-label-container" style="--angle: 202.5deg;">
+            <div class="segment-label">50</div>
+            <div class="segment-subtext">SPINS</div>
+        </div>
+        <div class="segment-label-container" style="--angle: 247.5deg;">
+            <div class="segment-label">100</div>
+            <div class="segment-subtext">SPINS</div>
+        </div>
+        <div class="segment-label-container" style="--angle: 292.5deg;">
+            <div class="segment-label">10</div>
+            <div class="segment-subtext">SPINS</div>
+        </div>
+        <div class="segment-label-container" style="--angle: 337.5deg;">
+            <div class="segment-label">50</div>
+            <div class="segment-subtext">SPINS</div>
+        </div>        
+        <div class="center-circle">
+          <div class="center-text"></div>
+        </div>
+      </div>
+    </div>
+    <div class="wheel-stand">
+        <div class="stand-top"></div>
+      </div>
+    </div>
+  </div>
+        <div class="controls-container">
+            <button class="spin-button" id="spinButton">SPIN NOW</button>
+            <button class="claim-button" id="claimPrize" style="display: none;">CLAIM NOW</button>
+            <div class="result" id="resultText"></div>
+          </div>
+      </div>
+      </div>
+  <div class="right-column">
+      <div class="line line-1"></div>
+      <div class="line line-2"></div>
+      <div class="line line-3"></div>
+  </div>
+      </div>
+  <script src="script.js"></script>
+</body>
+</html>
