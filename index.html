@@ -39,13 +39,12 @@
          xmlns:xlink="http://www.w3.org/1999/xlink">
       
       <defs>
-        @font-face {
-            font-family: 'Savory Curry';
-            src: url('Savory-Curry.otf') format('opentype'),
-                 url('Savory-Curry.ttf') format('truetype');
-            font-weight: normal;
-            font-style: normal;
-          }
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap');
+            text {
+              font-family: 'Irish Grover', sans-serif;
+            }
+          </style>
           
   
         <path id="textCurve" d="M-280,110 A420,380 0 0,1 280,110" fill="none"/>
@@ -61,19 +60,23 @@
   <div class="segment-overlay-2">
     <svg width="400px" height="300px" viewBox="-350 -250 700 500" xmlns="http://www.w3.org/2000/svg"
          xmlns:xlink="http://www.w3.org/1999/xlink">
-      
       <defs>
         <style>
-            @import url('https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap');
-            text {
-              font-family: 'Irish Grover', sans-serif;
-            }
-          </style>
-          
-  
+          @font-face {
+            font-family: 'Savory Curry';
+            src: url('Savory-Curry.otf') format('opentype'),
+                 url('Savory-Curry.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+          }
+          text {
+            font-family: 'Savory Curry', cursive;
+          }
+        </style>
+    
         <path id="textCurve" d="M-280,110 A420,380 0 0,1 280,110" fill="none"/>
       </defs>
-  
+    
       <text class="segment-text-2" font-size="110" fill="#ffffff" stroke="#15410a" stroke-width="4">
         <textPath xlink:href="#textCurve" startOffset="50%" text-anchor="middle">
           IRISH
