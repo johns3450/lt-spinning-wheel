@@ -49,6 +49,10 @@ async function fetchSpinCount() {
     }
 }
 
+function startPollingSpinCount(interval = 5000) {
+    setInterval(fetchSpinCount, interval);
+  }  
+
 // Update spin counter UI using server values.
 function updateSpinCounter() {
     const remaining = maxSpins - spinsTaken;
@@ -127,12 +131,14 @@ document.addEventListener("DOMContentLoaded", function () {
               } else {
                 console.warn("Wheel container not found!");
               }
-          }, 400);
-      }, remainingScreenTime > 0 ? remainingScreenTime : 0);
-      
-      // Fetch the initial spin count from the server.
-      fetchSpinCount();
-  }
+          // Start polling the spin count every 5 seconds.
+          startPollingSpinCount(5000);
+      }, 400);
+  }, remainingScreenTime > 0 ? remainingScreenTime : 0);
+
+  // Fetch the initial spin count from the server.
+  fetchSpinCount();
+}
 
   window.onload = hideLoader;
 });
