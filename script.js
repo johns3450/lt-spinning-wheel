@@ -1,4 +1,3 @@
-// --- Existing Variable and Element Setup ---
 const wheel = document.getElementById('wheel');
 const spinButton = document.getElementById('spinButton');
 const resultText = document.getElementById('resultText');
@@ -14,8 +13,7 @@ resultSound.preload = "auto";
 spinSound.volume = 0.4;
 resultSound.volume = 0.7;
 
-// Set your API URL (update this to your actual server endpoint)
-const API_URL = "http://35.187.7.1:4000/api";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://35.187.7.1:4000/api";
 
 document.addEventListener('click', () => {
     spinSound.play().then(() => spinSound.pause());
