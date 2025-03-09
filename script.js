@@ -1,3 +1,4 @@
+// --- Existing Variable and Element Setup ---
 const wheel = document.getElementById('wheel');
 const spinButton = document.getElementById('spinButton');
 const resultText = document.getElementById('resultText');
@@ -5,27 +6,59 @@ const claimPrize = document.getElementById('claimPrize');
 const resultSound = new Audio('result-sound.wav');
 const spinSound = new Audio('start-sound.wav');
 
+const spinCounter = document.getElementById('spinCounter');
+
 spinSound.preload = "auto"; 
 resultSound.preload = "auto"; 
 
 spinSound.volume = 0.4;
 resultSound.volume = 0.7;
 
-// Required for iOS/Safari: Load sounds on first user interaction
+// Set your API URL (update this to your actual server endpoint)
+const API_URL = "http://35.187.7.1:4000/api";
+
 document.addEventListener('click', () => {
-    spinSound.play().then(() => spinSound.pause()); // Play & Pause to unlock sound on iOS
+    spinSound.play().then(() => spinSound.pause());
     resultSound.play().then(() => resultSound.pause());
-}, { once: true }); // Ensures it only runs once
+}, { once: true });
 
 let isSpinning = false;
 let canSpin = false;
 
+// --- Existing Utility Function ---
 function disableClick(event) {
   event.preventDefault();
   event.stopPropagation();
   return false;
 }
 
+// --- New Functions for Server Spin Count Integration ---
+
+// Fetch spin count from the server on page load and update local variables/UI.
+async function fetchSpinCount() {
+    try {
+        const response = await fetch(`${API_URL}/spins`);
+        const data = await response.json();
+        spinsTaken = data.totalSpins;
+        maxSpins = data.maxSpins;
+        updateSpinCounter();
+    } catch (error) {
+        console.error("❌ Failed to fetch spin count:", error);
+    }
+}
+
+// Update spin counter UI using server values.
+function updateSpinCounter() {
+    const remaining = maxSpins - spinsTaken;
+    spinCounter.innerHTML = `Quick! Only ${remaining} spins remaining`;
+    // Disable spin button if no spins left.
+    if (remaining <= 0) {
+        spinButton.disabled = true;
+        spinButton.innerText = "No Spins Left";
+    }
+}
+
+// --- Existing DOMContentLoaded and Loader Code ---
 document.addEventListener("DOMContentLoaded", function () {
   const loadingScreen = document.getElementById("loading-screen");
   const loadingIcon = document.querySelector("#loading-screen .loader");
@@ -94,20 +127,24 @@ document.addEventListener("DOMContentLoaded", function () {
               }
           }, 400);
       }, remainingScreenTime > 0 ? remainingScreenTime : 0);
+      
+      // Fetch the initial spin count from the server.
+      fetchSpinCount();
   }
 
   window.onload = hideLoader;
 });
 
+// --- Existing Segments and Animation Variables ---
 const segments = [
-  { label: '500', chance: 100 },
-  { label: '20', chance: 0 },
-  { label: '10', chance: 0 },
-  { label: '200', chance: 0 },
-  { label: '50', chance: 0 },
-  { label: '100', chance: 0 },
-  { label: '10', chance: 0 },
-  { label: '50', chance: 0 }
+  { label: '500', chance: 10 },
+  { label: '20', chance: 10 },
+  { label: '10', chance: 10 },
+  { label: '200', chance: 10 },
+  { label: '50', chance: 40 },
+  { label: '100', chance: 10 },
+  { label: '10', chance: 5 },
+  { label: '50', chance: 5 }
 ];
 
 let currentAngle = 0;
@@ -117,112 +154,152 @@ let startTimeSpin = 0;
 let duration = 6000;
 let lastTickIndex = 0;
 
-resultText.innerText = "Claim up to 500 Free Spins. No deposit required!";
+resultText.innerHTML = "Everyones and winner! <br> Take a SPIN to WIN!";
 resultText.style.display = "block";
 
-function spinWheel() {
-  console.log("Spin wheel triggered");
-  if (isSpinning || !canSpin) return;
-  isSpinning = true;
-  canSpin = false;
-
-  spinSound.currentTime = 0;
-  spinSound.loop = false;
-  spinSound.play();
-
-  startTimeSpin = performance.now();
-  requestAnimationFrame(animateSpin);
-
-  resultText.style.visibility = "none";
-  resultText.innerText = "";
-  claimPrize.style.display = "none";
-
-  lastTickIndex = Math.floor(currentAngle / (360 / segments.length));
-
-  const totalWeight = segments.reduce((sum, seg) => sum + seg.chance, 0);
-  let rand = Math.random() * totalWeight;
-  let cumulative = 0;
-  let chosenSegment = segments[0];
-  let chosenIndex = 0;
-  for (let i = 0; i < segments.length; i++) {
-    cumulative += segments[i].chance;
-    if (rand <= cumulative) {
-      chosenSegment = segments[i];
-      chosenIndex = i;
-      break;
+// --- Updated spinWheel() Function (with Server Integration) ---
+async function spinWheel() {
+    console.log("Spin wheel triggered");
+    // If maximum spins have been reached, do nothing.
+    if (spinsTaken >= maxSpins) {
+      console.log("No spins remaining");
+      return;
     }
-  }
+    if (isSpinning || !canSpin) return;
+    
+    // Send request to the server to update spin count
+    try {
+        const response = await fetch(`${API_URL}/spin`, { method: "POST" });
+        const data = await response.json();
 
-  const degreesPerSegment = 360 / segments.length;
-  const halfSegment = degreesPerSegment / 2;
-  const landingAngle = 1350 - (chosenIndex * degreesPerSegment) - halfSegment;
-  startAngle = currentAngle % 360;
-  targetAngle = currentAngle + landingAngle;
+        if (response.status === 400) {
+            spinButton.disabled = true;
+            spinButton.innerText = "No Spins Left";
+            return;
+        }
+        
+        spinsTaken = data.totalSpins;
+        maxSpins = data.maxSpins;  // In case max spins has been updated on the server.
+        updateSpinCounter();
+    } catch (error) {
+        console.error("❌ Failed to update spin count:", error);
+        return;
+    }
 
-  window.chosenIndexGlobal = chosenIndex;
+    // If spins are now exhausted, disable further clicks.
+    if (spinsTaken >= maxSpins) {
+      spinButton.style.display = "none";
+    }
 
-  startTimeSpin = null;
-  requestAnimationFrame(animateSpin);
-}
+    isSpinning = true;
+    canSpin = false;
 
-function animateSpin(timestamp) {
-  if (!startTimeSpin) startTimeSpin = timestamp;
-  const elapsed = timestamp - startTimeSpin;
-  const progress = Math.min(elapsed / duration, 1);
-  const ease = 1 - Math.pow(1 - progress, 3);
-  const angle = startAngle + ease * (targetAngle - startAngle);
-  currentAngle = angle;
-  wheel.style.transform = `translate(-50%, -50%) rotate(${angle}deg)`;
-
-  const tickSpacing = 360 / segments.length;
-  let currentTickIndex = Math.floor(currentAngle / tickSpacing);
-  if (currentTickIndex > lastTickIndex) {
-    tickTicker();
-    lastTickIndex = currentTickIndex;
-  }
-
-  if (progress < 1) {
-    requestAnimationFrame(animateSpin);
-  } else {
-    isSpinning = false;
-    currentAngle = currentAngle % 360;
-
-    spinSound.pause();
     spinSound.currentTime = 0;
+    spinSound.loop = false;
+    spinSound.play();
 
-    const finalSegment = segments[window.chosenIndexGlobal];
+    startTimeSpin = performance.now();
+    requestAnimationFrame(animateSpin);
 
-    resultText.innerText = `You've unlocked ${finalSegment.label} Free Spins & more!`;
-    resultText.style.display = "block";
-    spinButton.style.display = "none";
-    claimPrize.style.display = "inline-block";
+    resultText.style.visibility = "none";
+    resultText.innerText = "";
+    claimPrize.style.display = "none";
 
-    setTimeout(() => {
-      resultSound.currentTime = 0;
-      resultSound.play().catch(error => console.warn("Result sound blocked:", error));
-  }, 100);
+    lastTickIndex = Math.floor(currentAngle / (360 / segments.length));
 
-    claimPrize.classList.add("flashing");
-    resultText.classList.add("flashing");
+    const totalWeight = segments.reduce((sum, seg) => sum + seg.chance, 0);
+    let rand = Math.random() * totalWeight;
+    let cumulative = 0;
+    let chosenSegment = segments[0];
+    let chosenIndex = 0;
+    for (let i = 0; i < segments.length; i++) {
+        cumulative += segments[i].chance;
+        if (rand <= cumulative) {
+            chosenSegment = segments[i];
+            chosenIndex = i;
+            break;
+        }
+    }
 
-    setTimeout(() => {
-      resultText.classList.remove("flashing");
-    }, 2400);
+    const minSpins = 5;
+    const degreesPerSegment = 360 / segments.length;
+    const halfSegment = degreesPerSegment / 2;
+    
+    const segmentTargetAngle = 360 - ((chosenIndex * degreesPerSegment) + halfSegment);
+    
+    startAngle = currentAngle % 360;
+    
+    const extraRotation = minSpins * 360 - startAngle + segmentTargetAngle;
+    
+    targetAngle = currentAngle + extraRotation;  
 
-  setTimeout(() => {
-    claimPrize.classList.remove("flashing");
-  }, 800);
-  }
+    window.chosenIndexGlobal = chosenIndex;
+
+    startTimeSpin = null;
+    requestAnimationFrame(animateSpin);
 }
 
+// --- Existing Animation Function ---
+function animateSpin(timestamp) {
+    if (!startTimeSpin) startTimeSpin = timestamp;
+    const elapsed = timestamp - startTimeSpin;
+    const progress = Math.min(elapsed / duration, 1);
+    const ease = 1 - Math.pow(1 - progress, 3);
+    const angle = startAngle + ease * (targetAngle - startAngle);
+    currentAngle = angle;
+    wheel.style.transform = `translate(-50%, -50%) rotate(${angle}deg)`;
+
+    const tickSpacing = 360 / segments.length;
+    let currentTickIndex = Math.floor(currentAngle / tickSpacing);
+    if (currentTickIndex > lastTickIndex) {
+        tickTicker();
+        lastTickIndex = currentTickIndex;
+    }
+
+    if (progress < 1) {
+        requestAnimationFrame(animateSpin);
+    } else {
+        isSpinning = false;
+        currentAngle = currentAngle % 360;
+
+        spinSound.pause();
+        spinSound.currentTime = 0;
+
+        const finalSegment = segments[window.chosenIndexGlobal];
+
+        resultText.innerText = `You've unlocked ${finalSegment.label} Free Spins & more!`;
+        resultText.style.display = "block";
+        spinButton.style.display = "none";
+        claimPrize.style.display = "inline-block";
+
+        setTimeout(() => {
+            resultSound.currentTime = 0;
+            resultSound.play().catch(error => console.warn("Result sound blocked:", error));
+        }, 100);
+
+        claimPrize.classList.add("flashing");
+        resultText.classList.add("flashing");
+
+        setTimeout(() => {
+            resultText.classList.remove("flashing");
+        }, 2400);
+
+        setTimeout(() => {
+            claimPrize.classList.remove("flashing");
+        }, 800);
+    }
+}
+
+// --- Existing Ticker Function ---
 function tickTicker() {
-  const ticker = document.querySelector('.ticker');
-  ticker.classList.add('tick');
-  setTimeout(() => {
-    ticker.classList.remove('tick');
-  }, 100);
+    const ticker = document.querySelector('.ticker');
+    ticker.classList.add('tick');
+    setTimeout(() => {
+        ticker.classList.remove('tick');
+    }, 100);
 }
 
+// --- Existing Claim Prize Handler ---
 claimPrize.addEventListener('click', () => {
-  window.location.href = "https://freespinking.com";
+    window.location.href = "https://leisuretime.co.uk";
 });

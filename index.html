@@ -18,6 +18,8 @@
       <div class="inner-spinner"></div>
     </div>
   </div>
+  <div class="bg-image"></div>
+  <div class="bg-image-2"></div>
   <div class="bg-animated-gradient"></div>
   <div class="bg-animated-gradient-2"></div>
   <div class="page-layout">
@@ -30,10 +32,11 @@
     <div class="total-game-container">
 <div class="game-unit-container">
   <div class="header-logo-image">
-    <img src="https://freespinking.com/wp-content/uploads/2025/03/Free-Spin-King-Logo-34.png" alt="Free Spin King Logo">
+    <img src="" alt="">
   </div>
   <div class="header-logo-background"></div>
   <div class="header-logo-shadow"></div>
+  <div class="segment-overlay-container">
   <div class="segment-overlay">
     <svg width="400px" height="300px" viewBox="-350 -250 700 500" xmlns="http://www.w3.org/2000/svg"
          xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -44,7 +47,7 @@
             font-family: 'Irish Grover', sans-serif;
           }
         </style>
-        <path id="textCurve" d="M-280,110 A420,380 0 0,1 280,110" fill="none"/>
+        <path id="textCurve" d="M-280,110 A1000,1000 0 0,1 280,110" fill="none"/>
       </defs>
       <text class="segment-text" font-size="110" fill="#ffffff" stroke="#15410a" stroke-width="4">
         <textPath xlink:href="#textCurve" startOffset="50%" text-anchor="middle">
@@ -53,8 +56,29 @@
       </text>
     </svg>
   </div>
-  <div class="segment-overlay-2">
+  <div class="segment-overlay-border">
     <svg width="400px" height="300px" viewBox="-350 -250 700 500" xmlns="http://www.w3.org/2000/svg"
+         xmlns:xlink="http://www.w3.org/1999/xlink">
+      <defs>
+        <style>
+          @import url('https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap');
+          text.segment-text {
+            font-family: 'Irish Grover', sans-serif;
+          }
+        </style>
+        <path id="textCurve-border" d="M-280,110 A1000,1000 0 0,1 280,110" fill="none"/>
+      </defs>
+      <text class="segment-text" font-size="112" fill="#FFA500" stroke="#FFA500" stroke-width="5" style="letter-spacing: -3px">
+        <textPath xlink:href="#textCurve" startOffset="50%" text-anchor="middle">
+          LUCK O' THE
+        </textPath>
+      </text>
+    </svg>
+  </div>
+  </div>
+  <div class="segment-overlay-2-container">
+  <div class="segment-overlay-2">
+    <svg width="600px" height="400px" viewBox="-350 -250 700 500" xmlns="http://www.w3.org/2000/svg"
          xmlns:xlink="http://www.w3.org/1999/xlink">
       <defs>
         <style>
@@ -69,15 +93,50 @@
             font-family: 'Savory Curry', cursive;
           }
         </style>
-        <path id="textCurve" d="M-280,110 A420,380 0 0,1 280,110" fill="none"/>
+        <linearGradient id="textGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#4fec28;stop-opacity:1"/>
+            <stop offset="100%" style="stop-color:#15410a;stop-opacity:1"/>
+          </linearGradient>
+        <path id="textCurve-2" d="M -280,110 C -150,-65, 150,-65, 280,110" fill="none"/>
       </defs>
-      <text class="segment-text-2" font-size="110" fill="#ffffff" stroke="#15410a" stroke-width="4">
-        <textPath xlink:href="#textCurve" startOffset="50%" text-anchor="middle">
+      <text class="segment-text-2" font-size="110" fill="url(#textGradient)" stroke="#f5f406" stroke-width="4" dy="10">
+        <textPath href="#textCurve-2" startOffset="50%" text-anchor="middle">
+          IRISH
+        </textPath>
+      </text>
+    </svg>
+  </div>
+  <div class="segment-overlay-2-border">
+    <svg width="600px" height="400px" viewBox="-350 -250 700 500" xmlns="http://www.w3.org/2000/svg"
+         xmlns:xlink="http://www.w3.org/1999/xlink">
+      <defs>
+        <style>
+          @font-face {
+            font-family: 'Savory Curry';
+            src: url('Savory-Curry.otf') format('opentype'),
+                 url('Savory-Curry.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+          }
+          text.segment-text-2 {
+            font-family: 'Savory Curry', cursive;
+          }
+        </style>
+        <path id="textCurve-2-border" d="M -280,110 C -150,-65, 150,-65, 280,110" fill="none"/>
+      </defs>
+      <text class="segment-text-2" font-size="120" fill="#FFA500" stroke="#FFA500" stroke-width="5" style="letter-spacing: -4.5px" dy="10">
+        <textPath href="#textCurve-2" startOffset="50%" text-anchor="middle">
           IRISH
         </textPath>
       </text>
     </svg>
   </div>  
+  <div class="segment-overlay-2-icon">
+    <svg width="95px" height="400px" viewBox="-350 -250 700 500" xmlns="http://www.w3.org/2000/svg">
+      <image href="four-leaf.svg" x="-150" y="-150" width="300" height="300" transform="rotate(45, 0, 0)" preserveAspectRatio="xMidYMid meet" />
+    </svg>
+  </div>
+</div>
 <div class="header-container">
   <img src="segment.svg" class="segment-shape" alt="Segment Shape">
   <img src="segment-2.svg" class="segment-shape-2" alt="Segment Shape 2">
@@ -150,6 +209,9 @@
             <button class="spin-button" id="spinButton">SPIN NOW</button>
             <button class="claim-button" id="claimPrize" style="display: none;">CLAIM NOW</button>
             <div class="result" id="resultText"></div>
+            <div id="spinCounter" style="position: relative; background: rgba(5, 80, 2, 0.7); color: #fff; padding: 10px 20px; border-radius: 5px; border: 1px solid #ffffff; font-family: sans-serif; font-size: 16px;">
+                Quick! Only 1000 spins remaining
+              </div>
           </div>
       </div>
       </div>
