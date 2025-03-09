@@ -15,7 +15,7 @@ spinSound.volume = 0.4;
 resultSound.volume = 0.7;
 
 // Set your API URL (update this to your actual server endpoint)
-const API_URL = "/api/spins";
+const API_URL = "/api";
 
 document.addEventListener('click', () => {
     spinSound.play().then(() => spinSound.pause());
@@ -37,7 +37,7 @@ function disableClick(event) {
 // Fetch spin count from the server on page load and update local variables/UI.
 async function fetchSpinCount() {
     try {
-        const response = await fetch(`${API_URL}/spins`);
+        const response = await fetch(`${API_URL}`);
         const data = await response.json();
         spinsTaken = data.totalSpins;
         maxSpins = data.maxSpins;
