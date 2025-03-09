@@ -169,30 +169,19 @@ async function spinWheel() {
     }
     if (isSpinning || !canSpin) return;
     
-    // Send request to the server to update spin count
-    try {
-        const response = await fetch(`${API_URL}/spin`, { method: "POST" });
-        const data = await response.json();
+    // Fire off the API request without awaiting it
+    fetch(`${API_URL}/spin`, { method: "POST" })
+      .then(response => response.json())
+      .then(data => {
+         spinsTaken = data.totalSpins;
+         maxSpins = data.maxSpins;  // Update max spins if it changes on the server.
+         updateSpinCounter();
+      })
+      .catch(error => {
+         console.error("❌ Failed to update spin count:", error);
+      });
 
-        if (response.status === 400) {
-            spinButton.disabled = true;
-            spinButton.innerText = "No Spins Left";
-            return;
-        }
-        
-        spinsTaken = data.totalSpins;
-        maxSpins = data.maxSpins;  // In case max spins has been updated on the server.
-        updateSpinCounter();
-    } catch (error) {
-        console.error("❌ Failed to update spin count:", error);
-        return;
-    }
-
-    // If spins are now exhausted, disable further clicks.
-    if (spinsTaken >= maxSpins) {
-      spinButton.style.display = "none";
-    }
-
+    // Immediately start the spin animation without waiting for the fetch
     isSpinning = true;
     canSpin = false;
 
