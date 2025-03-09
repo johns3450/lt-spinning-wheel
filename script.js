@@ -37,7 +37,7 @@ function disableClick(event) {
 // Fetch spin count from the server on page load and update local variables/UI.
 async function fetchSpinCount() {
     try {
-        const response = await fetch(`${API_URL}`);
+        const response = await fetch(`${API_URL}/spins`);
         const data = await response.json();
         spinsTaken = data.totalSpins;
         maxSpins = data.maxSpins;
