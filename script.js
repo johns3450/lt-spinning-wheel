@@ -15,7 +15,9 @@ spinSound.volume = 0.4;
 resultSound.volume = 0.7;
 
 // Set your API URL (update this to your actual server endpoint)
-const API_URL = "/api";
+const API_URL = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
+  ? "http://35.187.7.1:4000/api"
+  : "/api";
 
 document.addEventListener('click', () => {
     spinSound.play().then(() => spinSound.pause());
