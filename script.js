@@ -4,24 +4,59 @@ const spinButton = document.getElementById('spinButton');
 const resultText = document.getElementById('resultText');
 const claimPrize = document.getElementById('claimPrize');
 const resultSound = new Audio('result-sound.wav');
-const spinSound = new Audio('start-sound.wav');
-
 const spinCounter = document.getElementById('spinCounter');
+const DUMMY_MODE = false; // Set to true for dummy testing, false when backend is ready.
 
-spinSound.preload = "auto"; 
-resultSound.preload = "auto"; 
+let outcomeLogged = false;
 
-spinSound.volume = 0.4;
+
+// Set preload and volume settings.
+resultSound.preload = "auto";
 resultSound.volume = 0.7;
 
-// Set your API URL (update this to your actual server endpoint)
-const API_URL = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
-  ? "http://35.187.7.1:4000/api"
-  : "/api";
+// --- Set API URL Based on Environment ---
+// When testing locally, point directly to your backend; in production, use relative paths so Vercel rewrites can occur.
+let API_URL = "";
+if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+  API_URL = "http://35.187.7.1:4000/api";
+} else {
+  API_URL = "/api";
+}
 
+// --- Email Form Variables ---
+const emailForm = document.getElementById("email-form");
+const emailInput = document.getElementById("userEmail");
+const captchaInput = document.getElementById("captchaInput");
+const emailSubmit = document.getElementById("emailSubmit");
+const emailError = document.getElementById("emailError");
+let userEmail = null;  // To store the submitted email
+
+// Preload sounds on first user interaction.
+// Initialize background music
+const backgroundMusic = new Audio('irish-game-sound.m4a'); // Adjust file extension if needed.
+backgroundMusic.loop = true;
+backgroundMusic.volume = 0.3; // Adjust volume as desired.
+
+function fadeIn(audio, duration = 2000, targetVolume = 0.3) {
+    audio.volume = 0;
+    audio.play().catch(error => console.warn("Playback error:", error));
+    const steps = 20;
+    const stepDuration = duration / steps;
+    const increment = targetVolume / steps;
+    let currentStep = 0;
+    const interval = setInterval(() => {
+      currentStep++;
+      audio.volume = Math.min(audio.volume + increment, targetVolume);
+      if (currentStep >= steps) {
+        clearInterval(interval);
+      }
+    }, stepDuration);
+  }  
+
+// Preload result sound and background music on first user interaction.
 document.addEventListener('click', () => {
-    spinSound.play().then(() => spinSound.pause());
     resultSound.play().then(() => resultSound.pause());
+    backgroundMusic.play().then(() => backgroundMusic.pause());
 }, { once: true });
 
 let isSpinning = false;
@@ -34,9 +69,8 @@ function disableClick(event) {
   return false;
 }
 
-// --- New Functions for Server Spin Count Integration ---
-
-// Fetch spin count from the server on page load and update local variables/UI.
+// --- Functions for Server Spin Count Integration ---
+// Fetch the global spin count from the backend and update UI.
 async function fetchSpinCount() {
     try {
         const response = await fetch(`${API_URL}/spins`);
@@ -49,22 +83,74 @@ async function fetchSpinCount() {
     }
 }
 
-function startPollingSpinCount(interval = 5000) {
-    setInterval(fetchSpinCount, interval);
-  }  
-
-// Update spin counter UI using server values.
+// Update the spin counter UI.
 function updateSpinCounter() {
     const remaining = maxSpins - spinsTaken;
     spinCounter.innerHTML = `Quick! Only ${remaining} spins remaining`;
-    // Disable spin button if no spins left.
     if (remaining <= 0) {
         spinButton.disabled = true;
         spinButton.innerText = "No Spins Left";
     }
 }
 
-// --- Existing DOMContentLoaded and Loader Code ---
+// Polling to update spin count live.
+function startPollingSpinCount(interval = 5000) {
+    setInterval(fetchSpinCount, interval);
+}
+
+// --- Email Submission & Captcha Handling ---
+// When the user submits their email and captcha, call the backend to record the email.
+emailSubmit.addEventListener("click", async function() {
+    const emailVal = emailInput.value.trim();
+    const captchaVal = captchaInput.value.trim();
+    if (!emailVal || !captchaVal) {
+        emailError.textContent = "Please enter your email and captcha.";
+        return;
+    }
+    if (captchaVal !== "1234") {  // Dummy captcha check; replace with a real captcha solution later.
+        emailError.textContent = "Captcha incorrect. Please try again.";
+        return;
+    }
+    
+    if (DUMMY_MODE) {
+        // Dummy mode: Only allow "cheeky@example.com" for testing.
+        if (emailVal.toLowerCase() === "cheeky@example.com") {
+            userEmail = emailVal;
+            emailForm.style.display = "none";
+            document.querySelector('.page-layout').style.display = "block";
+            startPollingSpinCount(5000);
+            emailError.textContent = "";
+            fadeIn(backgroundMusic);  // Fade in background music over 2 seconds.
+        } else {
+            emailError.textContent = "This email has already been used (dummy mode).";
+        }
+    } else {
+        // Real backend call for email submission.
+        try {
+            const response = await fetch(`${API_URL}/submitEmail`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email: emailVal })
+            });
+            const result = await response.json();
+            if (response.status === 400) {
+                emailError.textContent = "This email has already been used.";
+                return;
+            }
+            userEmail = emailVal;
+            emailForm.style.display = "none";
+            document.querySelector('.page-layout').style.display = "block";
+            startPollingSpinCount(5000);
+            // Fade in background music on email submission.
+            fadeIn(backgroundMusic);
+        } catch (error) {
+            emailError.textContent = "Error submitting email. Please try again.";
+            console.error("Email submission error:", error);
+        }
+    }
+});
+
+// --- DOMContentLoaded and Loader Code ---
 document.addEventListener("DOMContentLoaded", function () {
   const loadingScreen = document.getElementById("loading-screen");
   const loadingIcon = document.querySelector("#loading-screen .loader");
@@ -108,7 +194,6 @@ document.addEventListener("DOMContentLoaded", function () {
               if (wheelContainer) {
                 let clickOverlay = document.createElement('div');
                 clickOverlay.id = "clickOverlay";
-
                 clickOverlay.style.position = "absolute";
                 clickOverlay.style.top = "0";
                 clickOverlay.style.left = "0";
@@ -131,28 +216,26 @@ document.addEventListener("DOMContentLoaded", function () {
               } else {
                 console.warn("Wheel container not found!");
               }
-          // Start polling the spin count every 5 seconds.
-          startPollingSpinCount(5000);
-      }, 400);
-  }, remainingScreenTime > 0 ? remainingScreenTime : 0);
-
-  // Fetch the initial spin count from the server.
-  fetchSpinCount();
-}
+          }, 400);
+      }, remainingScreenTime > 0 ? remainingScreenTime : 0);
+      
+      // Fetch initial spin count from server.
+      fetchSpinCount();
+  }
 
   window.onload = hideLoader;
 });
 
 // --- Existing Segments and Animation Variables ---
 const segments = [
-  { label: '500', chance: 10 },
-  { label: '20', chance: 10 },
-  { label: '10', chance: 10 },
-  { label: '200', chance: 10 },
-  { label: '50', chance: 40 },
-  { label: '100', chance: 10 },
+  { label: 'No Win', chance: 20, winning: false },
+  { label: '20', chance: 1 },
+  { label: '10', chance: 1 },
+  { label: '200', chance: 300 },
+  { label: '50', chance: 5 },
+  { label: '100', chance: 5 },
   { label: '10', chance: 5 },
-  { label: '50', chance: 5 }
+  { label: 'Spin Again', chance: 20, spinAgain: true }
 ];
 
 let currentAngle = 0;
@@ -165,35 +248,40 @@ let lastTickIndex = 0;
 resultText.innerHTML = "Everyones and winner! <br> Take a SPIN to WIN!";
 resultText.style.display = "block";
 
-// --- Updated spinWheel() Function (with Server Integration) ---
+// --- Updated spinWheel() Function (with Backend Integration) ---
 async function spinWheel() {
     console.log("Spin wheel triggered");
-    // If maximum spins have been reached, do nothing.
     if (spinsTaken >= maxSpins) {
-      console.log("No spins remaining");
+      console.log("No spins remaining for this email");
       return;
     }
     if (isSpinning || !canSpin) return;
     
-    // Fire off the API request without awaiting it
-    fetch(`${API_URL}/spin`, { method: "POST" })
-      .then(response => response.json())
-      .then(data => {
+    outcomeLogged = false;  // Reset the outcome logging flag for the new spin
+    
+    // Update spin count on the server (fire and forget)
+    fetch(`${API_URL}/spin`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: userEmail })
+    })
+    .then(response => response.json())
+    .then(data => {
          spinsTaken = data.totalSpins;
-         maxSpins = data.maxSpins;  // Update max spins if it changes on the server.
+         maxSpins = data.maxSpins;
          updateSpinCounter();
-      })
-      .catch(error => {
+    })
+    .catch(error => {
          console.error("❌ Failed to update spin count:", error);
-      });
+    });
 
-    // Immediately start the spin animation without waiting for the fetch
+    if (spinsTaken >= maxSpins) {
+      spinButton.style.display = "none";
+    }
+
     isSpinning = true;
     canSpin = false;
 
-    spinSound.currentTime = 0;
-    spinSound.loop = false;
-    spinSound.play();
 
     startTimeSpin = performance.now();
     requestAnimationFrame(animateSpin);
@@ -259,15 +347,91 @@ function animateSpin(timestamp) {
         isSpinning = false;
         currentAngle = currentAngle % 360;
 
-        spinSound.pause();
-        spinSound.currentTime = 0;
 
         const finalSegment = segments[window.chosenIndexGlobal];
 
-        resultText.innerText = `You've unlocked ${finalSegment.label} Free Spins & more!`;
+        if (!outcomeLogged) {
+            if (finalSegment.spinAgain) {
+                resultText.innerText = "Spin Again!";
+                spinButton.innerText = "SPIN AGAIN";
+                spinButton.style.display = "inline-block";
+                canSpin = true;
+            } else if (finalSegment.winning === false) {
+                // Non-winning segment: show message and do not log outcome
+                resultText.innerText = "No win this time!";
+                spinButton.style.display = "none";
+                claimPrize.style.display = "none";
+            } else {
+                resultText.innerText = `You've unlocked ${finalSegment.label} Free Spins & more!`;
+                spinButton.style.display = "none";
+                claimPrize.style.display = "inline-block";
+          
+                // Log the outcome to the backend.
+                fetch(`${API_URL}/logOutcome`, {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ email: userEmail, outcome: finalSegment.label })
+                })
+                .then(response => response.json())
+                .then(data => {
+                  console.log("Outcome logged:", data);
+                })
+                .catch(error => {
+                  console.error("Error logging outcome:", error);
+                });
+                if (finalSegment.winning !== false && !finalSegment.spinAgain) {
+                    const gameContainer = document.querySelector('.game-container');
+                    if (gameContainer) {
+                      // Apply 50% opacity to the game container (which holds the wheel)
+                      gameContainer.style.setProperty('opacity', '0.5', 'important');
+                  
+                      // Create an image element for the winning animation.
+                      const animationOverlay = document.createElement('img');
+                      animationOverlay.src = 'leprachaun-animation.gif';
+                      // Make the GIF smaller (adjust width as desired)
+                      animationOverlay.style.width = '250px';
+                      animationOverlay.style.height = 'auto';
+                      
+                      // Position the overlay exactly over the wheel.
+                      animationOverlay.style.position = 'absolute';
+                      animationOverlay.style.top = '50%';
+                      animationOverlay.style.left = '50%';
+                      animationOverlay.style.transform = 'translate(-50%, -50%)';
+                      animationOverlay.style.zIndex = '20000'; // Ensure it's on top
+                      animationOverlay.style.pointerEvents = 'none'; // Make it non-clickable
+                      
+                      // Set up a CSS transition for fading the overlay in/out.
+                      animationOverlay.style.transition = 'opacity 1s ease-in-out';
+                      animationOverlay.style.opacity = '0'; // start invisible
+                  
+                          // Append the overlay to the body so it's not affected by gameContainer's opacity.
+    document.body.appendChild(animationOverlay);
+                  
+                      // Fade in over 1 second.
+                      setTimeout(() => {
+                        animationOverlay.style.opacity = '1';
+                      }, 50); // slight delay to allow transition to trigger
+                  
+                      // After 14 seconds, fade out over 1 second.
+                      setTimeout(() => {
+                        animationOverlay.style.opacity = '0';
+                      }, 13000);
+                  
+                      // After 15 seconds, remove the overlay and restore container opacity.
+                      setTimeout(() => {
+                        gameContainer.style.opacity = '1';
+                        animationOverlay.remove();
+                      }, 14000);
+                    }
+                  }
+                  
+                  
+            }
+            outcomeLogged = true; // Mark as logged so it doesn't happen twice.
+          }
+          
+
         resultText.style.display = "block";
-        spinButton.style.display = "none";
-        claimPrize.style.display = "inline-block";
 
         setTimeout(() => {
             resultSound.currentTime = 0;
