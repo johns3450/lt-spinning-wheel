@@ -98,6 +98,9 @@ function startPollingSpinCount(interval = 5000) {
     setInterval(fetchSpinCount, interval);
 }
 
+const leprechaunPreload = new Image();
+leprechaunPreload.src = 'leprachaun-animation.gif';
+
 // --- Email Submission & Captcha Handling ---
 // When the user submits their email and captcha, call the backend to record the email.
 emailSubmit.addEventListener("click", async function() {
