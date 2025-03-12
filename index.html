@@ -18,7 +18,7 @@
     <h2>Please enter your email</h2>
     <input type="email" id="userEmail" placeholder="Your email" required style="margin-bottom: 10px; width: 250px;"/>
     <!-- Simple captcha: type "1234" -->
-    <input type="text" id="captchaInput" placeholder="Enter 1234" required style="margin-bottom: 10px; width: 250px;"/>
+    <div class="g-recaptcha" data-sitekey="6LfyJvIqAAAAAOEGjofSghINTfSSLVU2YZYtp_a0" style="margin-bottom: 10px;"></div>
     <button id="emailSubmit">Go</button>
     <div id="emailError" style="color: red; margin-top: 10px;"></div>
   </div>
@@ -231,6 +231,7 @@
         <div class="line line-3"></div>
     </div>
   </div>
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
   <script src="script.js"></script>
 </body>
 </html>

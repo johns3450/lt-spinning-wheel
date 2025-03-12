@@ -271,7 +271,9 @@ body:not(.loading) * {
   align-items: center;
   width: 1100px;
   height: auto;
-  top: 0;
+  top: 25px;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .segment-shape {
@@ -283,7 +285,7 @@ background-position: center;
 filter: drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.5));
 transform: translateX(-50%);
 z-index: 1;
-top: -400px;
+top: -395px;
 width: 55%;
 }
 
@@ -324,7 +326,7 @@ pointer-events: none;
 
 .segment-overlay-2 {
     position: absolute;
-    top: -63px;
+    top: -60.5px;
     left: 50%;
     transform: translateX(-50%);
     width: 435px;
@@ -353,7 +355,7 @@ pointer-events: none;
         
         .segment-overlay-2-border {
             position: absolute;
-            top: -61px;
+            top: -59px;
             left: 50%;
             transform: translateX(-50%);
             width: 425px;
@@ -389,7 +391,9 @@ filter: drop-shadow(5px 5px 15px rgba(0, 0, 0, 0.5));
   display: flex;
   justify-content: center;
   height: auto;
-  top: 155px;
+  top: 185px;
+  left: 0;
+  right: 0;
 }
 
 .wheel-container {

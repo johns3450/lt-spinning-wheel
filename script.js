@@ -26,10 +26,54 @@ if (window.location.hostname === "localhost" || window.location.hostname === "12
 // --- Email Form Variables ---
 const emailForm = document.getElementById("email-form");
 const emailInput = document.getElementById("userEmail");
-const captchaInput = document.getElementById("captchaInput");
 const emailSubmit = document.getElementById("emailSubmit");
 const emailError = document.getElementById("emailError");
 let userEmail = null;  // To store the submitted email
+
+function showLoadingScreenForWheel() {
+    const loadingScreen = document.getElementById("loading-screen");
+    const loadingIcon = document.querySelector("#loading-screen .loader");
+  
+    // Remove any inline styles that might conflict with your CSS.
+    loadingScreen.removeAttribute('style');
+    
+    // Add a class if needed (for example, 'active-loading') that ensures the same styles are applied.
+    // In this example we assume your CSS for #loading-screen is already what you want.
+    loadingScreen.classList.remove("hidden");
+    document.body.classList.add("loading");
+  
+    if (loadingIcon) {
+      loadingIcon.style.display = "block";
+      loadingIcon.style.opacity = "1";
+    }
+  
+    // Wait 2 seconds (2000ms) then fade out.
+    setTimeout(() => {
+      // Optionally fade out by adding a class or inline style.
+      // For instance, if you want a fade-out transition, you can do:
+      loadingScreen.style.transition = 'opacity 2s ease-out';
+      loadingScreen.style.opacity = "0";
+      if (loadingIcon) {
+        loadingIcon.style.transition = 'opacity 2s ease-out';
+        loadingIcon.style.opacity = "0";
+      }
+      // Then after the transition, hide them.
+      setTimeout(() => {
+        loadingScreen.classList.add("hidden");
+        document.body.classList.remove("loading");
+        loadingScreen.style.display = "none";
+        if (loadingIcon) {
+          loadingIcon.style.display = "none";
+        }
+        // Reset opacity for future use.
+        loadingScreen.style.opacity = "1";
+        if (loadingIcon) {
+          loadingIcon.style.opacity = "1";
+        }
+      }, 2000);
+    }, 2000);
+  }
+  
 
 // Preload sounds on first user interaction.
 // Initialize background music
@@ -105,13 +149,10 @@ leprechaunPreload.src = 'leprachaun-animation.gif';
 // When the user submits their email and captcha, call the backend to record the email.
 emailSubmit.addEventListener("click", async function() {
     const emailVal = emailInput.value.trim();
-    const captchaVal = captchaInput.value.trim();
-    if (!emailVal || !captchaVal) {
+    const recaptchaResponse = grecaptcha.getResponse();
+
+    if (!emailVal || !recaptchaResponse) {
         emailError.textContent = "Please enter your email and captcha.";
-        return;
-    }
-    if (captchaVal !== "1234") {  // Dummy captcha check; replace with a real captcha solution later.
-        emailError.textContent = "Captcha incorrect. Please try again.";
         return;
     }
     
@@ -120,10 +161,16 @@ emailSubmit.addEventListener("click", async function() {
         if (emailVal.toLowerCase() === "cheeky@example.com") {
             userEmail = emailVal;
             emailForm.style.display = "none";
-            document.querySelector('.page-layout').style.display = "block";
-            startPollingSpinCount(5000);
+            // Show loading screen for 3 seconds.
+            showLoadingScreenForWheel();
+            // After the loading screen hides, reveal the wheel screen.
+            setTimeout(() => {
+                document.querySelector('.page-layout').style.display = "block";
+                startPollingSpinCount(5000);
+            }, 2000);
             emailError.textContent = "";
             fadeIn(backgroundMusic);  // Fade in background music over 2 seconds.
+            grecaptcha.reset();
         } else {
             emailError.textContent = "This email has already been used (dummy mode).";
         }
@@ -133,7 +180,7 @@ emailSubmit.addEventListener("click", async function() {
             const response = await fetch(`${API_URL}/submitEmail`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email: emailVal })
+                body: JSON.stringify({ email: emailVal, recaptcha: recaptchaResponse })
             });
             const result = await response.json();
             if (response.status === 400) {
@@ -142,10 +189,15 @@ emailSubmit.addEventListener("click", async function() {
             }
             userEmail = emailVal;
             emailForm.style.display = "none";
+        // Show loading screen for 3 seconds.
+        showLoadingScreenForWheel();
+        setTimeout(() => {
             document.querySelector('.page-layout').style.display = "block";
             startPollingSpinCount(5000);
+        }, 2000);
             // Fade in background music on email submission.
             fadeIn(backgroundMusic);
+            grecaptcha.reset();
         } catch (error) {
             emailError.textContent = "Error submitting email. Please try again.";
             console.error("Email submission error:", error);
