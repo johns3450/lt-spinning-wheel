@@ -184,9 +184,10 @@ emailSubmit.addEventListener("click", async function() {
             });
             const result = await response.json();
             if (response.status === 400) {
-                emailError.textContent = "This email has already been used.";
-                return;
+              emailError.textContent = result.error || "Error submitting email.";
+              return;
             }
+            
             userEmail = emailVal;
             emailForm.style.display = "none";
         // Show loading screen for 3 seconds.
