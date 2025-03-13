@@ -3,27 +3,157 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>3D Spinning Wheel</title>
+    <title>Leisuretime | Luck O' The Irish | Take A Spin To Win!</title>
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
-    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap" rel="stylesheet">
-
     <link rel="stylesheet" href="style.css" />
   </head>
 <body>
-  <!-- Email & Captcha Form (shown initially) -->
-  <div id="email-form" style="position: absolute; top: 20px; left:50%; transform: translateX(-50%); background: rgba(255,255,255,0.9); padding: 20px; border-radius: 5px; z-index: 20000;">
-    <h2>Please enter your email</h2>
-    <input type="email" id="userEmail" placeholder="Your email" required style="margin-bottom: 10px; width: 250px;"/>
-    <!-- Simple captcha: type "1234" -->
+  <div id="email-form">
+    <div id="signup-section">
+      <div class="header-logo-image">
+        <img src="leisuretime_logo.png" alt="Leisuretime">
+      </div>
+      <div class="header-logo-background"></div>
+    <div class="header-unit-container-login" id="wheelContainer">
+            <div class="segment-overlay-container">
+        <div class="segment-overlay">
+          <svg width="400px" height="300px" viewBox="-350 -250 700 500" xmlns="http://www.w3.org/2000/svg"
+               xmlns:xlink="http://www.w3.org/1999/xlink">
+            <defs>
+              <style>
+                @import url('https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap');
+                text.segment-text {
+                  font-family: 'Irish Grover', sans-serif;
+                }
+              </style>
+              <path id="textCurve" d="M-280,110 A1000,1000 0 0,1 280,110" fill="none"/>
+            </defs>
+            <text class="segment-text" font-size="110" fill="#ffffff" stroke="#15410a" stroke-width="4">
+              <textPath xlink:href="#textCurve" startOffset="50%" text-anchor="middle">
+                LUCK O' THE
+              </textPath>
+            </text>
+          </svg>
+        </div>
+        <div class="segment-overlay-border">
+          <svg width="400px" height="300px" viewBox="-350 -250 700 500" xmlns="http://www.w3.org/2000/svg"
+               xmlns:xlink="http://www.w3.org/1999/xlink">
+            <defs>
+              <style>
+                @import url('https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap');
+                text.segment-text {
+                  font-family: 'Irish Grover', sans-serif;
+                }
+              </style>
+              <path id="textCurve-border" d="M-280,110 A1000,1000 0 0,1 280,110" fill="none"/>
+            </defs>
+            <text class="segment-text" font-size="112" fill="#FFA500" stroke="#FFA500" stroke-width="5" style="letter-spacing: -3px">
+              <textPath xlink:href="#textCurve" startOffset="50%" text-anchor="middle">
+                LUCK O' THE
+              </textPath>
+            </text>
+          </svg>
+        </div>
+      </div>
+      <div class="segment-overlay-2-container">
+        <div class="segment-overlay-2">
+          <svg width="600px" height="400px" viewBox="-350 -250 700 500" xmlns="http://www.w3.org/2000/svg"
+               xmlns:xlink="http://www.w3.org/1999/xlink">
+            <defs>
+              <style>
+                @font-face {
+                  font-family: 'Savory Curry';
+                  src: url('Savory-Curry.otf') format('opentype'),
+                       url('Savory-Curry.ttf') format('truetype');
+                  font-weight: normal;
+                  font-style: normal;
+                }
+                text.segment-text-2 {
+                  font-family: 'Savory Curry', cursive;
+                }
+              </style>
+              <linearGradient id="textGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" style="stop-color:#4fec28;stop-opacity:1"/>
+                <stop offset="100%" style="stop-color:#15410a;stop-opacity:1"/>
+              </linearGradient>
+              <path id="textCurve-2" d="M -280,110 C -150,-65, 150,-65, 280,110" fill="none"/>
+            </defs>
+            <text class="segment-text-2" font-size="110" fill="url(#textGradient)" stroke="#f5f406" stroke-width="4" dy="10">
+              <textPath href="#textCurve-2" startOffset="50%" text-anchor="middle">
+                IRISH
+              </textPath>
+            </text>
+          </svg>
+        </div>
+        <div class="segment-overlay-2-border">
+          <svg width="600px" height="400px" viewBox="-350 -250 700 500" xmlns="http://www.w3.org/2000/svg"
+               xmlns:xlink="http://www.w3.org/1999/xlink">
+            <defs>
+              <style>
+                @font-face {
+                  font-family: 'Savory Curry';
+                  src: url('Savory-Curry.otf') format('opentype'),
+                       url('Savory-Curry.ttf') format('truetype');
+                  font-weight: normal;
+                  font-style: normal;
+                }
+                text.segment-text-2 {
+                  font-family: 'Savory Curry', cursive;
+                }
+              </style>
+              <path id="textCurve-2-border" d="M -280,110 C -150,-65, 150,-65, 280,110" fill="none"/>
+            </defs>
+            <text class="segment-text-2" font-size="120" fill="#FFA500" stroke="#FFA500" stroke-width="5" style="letter-spacing: -4.5px" dy="10">
+              <textPath href="#textCurve-2" startOffset="50%" text-anchor="middle">
+                IRISH
+              </textPath>
+            </text>
+          </svg>
+        </div>  
+        <div class="segment-overlay-2-icon">
+          <svg width="95px" height="400px" viewBox="-350 -250 700 500" xmlns="http://www.w3.org/2000/svg">
+            <image href="four-leaf.svg" x="-150" y="-150" width="300" height="300" transform="rotate(45, 0, 0)" preserveAspectRatio="xMidYMid meet" />
+          </svg>
+        </div>
+      </div>
+    </div>
+    <div class="login-header-text">
+    <h2>Are you a Lucky Leisuretime Leprechaun?</h2>
+    <p>Take a spin on the wheel to WIN! Sign up to play ⬇️</p>
+    </div>
+    <input type="email" id="userEmail" placeholder="Enter your email" required />
+    <div id="captcha-container">
     <div class="g-recaptcha" data-sitekey="6LfyJvIqAAAAAOEGjofSghINTfSSLVU2YZYtp_a0" style="margin-bottom: 10px;"></div>
-    <button id="emailSubmit">Go</button>
+    </div>
+    <button id="emailSubmit">PLAY NOW</button>
     <div id="emailError" style="color: red; margin-top: 10px;"></div>
+    <div id="login-info-text"><div id="login-info-text-head">We need your email to contact you if you're a winner.</div><p id="termsLink" style="cursor: pointer; text-decoration: underline; color: blue;">
+      Terms &amp; Conditions apply.
+    </p></div>
   </div>
-
-  <!-- Loading Screen, Backgrounds, etc. (always visible) -->
+<div id="prizes-container">
+  <div id="prizes-inner-container">
+  <div class="prizes-header">
+    <h2>PRIZES </h2>
+  </div>
+  <div class="prizes-list">
+    <div class="prize-item"><span>🍀</span>HOLIDAY TO IRELAND</div>
+    <hr>
+    <div class="prize-item"><span>🕺</span>2 FOR 1 DAY TRIPS</div>
+    <hr>
+    <div class="prize-item"><span>💸</span>£20 GIFT VOUCHERS</div>
+    <hr>
+    <div class="prize-item"><span>💵</span>£5 GIFT VOUCHERS</div>
+    <hr>
+    <div class="prize-item"><span>👒</span>LEPRACHAUN HATS</div>
+  </div>
+</div>
+<div class="spacer"></div>
+</div>
+</div>
   <div id="loading-screen">
     <div class="loader">
       <div class="outer-spinner"></div>
@@ -34,8 +164,6 @@
   <div class="bg-image-2"></div>
   <div class="bg-animated-gradient"></div>
   <div class="bg-animated-gradient-2"></div>
-
-  <!-- Spinning Wheel Content (initially hidden) -->
   <div class="page-layout" style="display: none;">
     <div class="left-column">
       <div class="line line-1"></div>
@@ -44,8 +172,11 @@
     </div>
     <div class="center-column">
       <div class="total-game-container">
-        <div class="game-unit-container" id="wheelContainer"> <!-- shown when email is submitted -->
-          <!-- (Your existing wheel SVGs here) -->
+        <div class="header-logo-image-2">
+          <img src="leisuretime_logo.png" alt="Leisuretime">
+        </div>
+        <div class="header-logo-background-2"></div>
+        <div class="game-unit-container" id="wheelContainer">
           <div class="segment-overlay-container">
             <div class="segment-overlay">
               <svg width="400px" height="300px" viewBox="-350 -250 700 500" xmlns="http://www.w3.org/2000/svg"
@@ -103,13 +234,13 @@
                       font-family: 'Savory Curry', cursive;
                     }
                   </style>
-                  <linearGradient id="textGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <linearGradient id="textGradient2" x1="0%" y1="0%" x2="0%" y2="100%">
                     <stop offset="0%" style="stop-color:#4fec28;stop-opacity:1"/>
                     <stop offset="100%" style="stop-color:#15410a;stop-opacity:1"/>
                   </linearGradient>
                   <path id="textCurve-2" d="M -280,110 C -150,-65, 150,-65, 280,110" fill="none"/>
                 </defs>
-                <text class="segment-text-2" font-size="110" fill="url(#textGradient)" stroke="#f5f406" stroke-width="4" dy="10">
+                <text class="segment-text-2" font-size="110" fill="url(#textGradient2)" stroke="#f5f406" stroke-width="4" dy="10">
                   <textPath href="#textCurve-2" startOffset="50%" text-anchor="middle">
                     IRISH
                   </textPath>
@@ -174,37 +305,45 @@
               <div class="pin" style="--pin-angle: 225deg;"></div>
               <div class="pin" style="--pin-angle: 270deg;"></div>
               <div class="pin" style="--pin-angle: 315deg;"></div>
+              <!-- 1 -->
               <div class="segment-label-container" style="--angle: 22.5deg;">
-                <div class="segment-label">500</div>
-                <div class="segment-subtext">SPINS</div>
+                <div class="segment-label">🎟</div>
+                <div class="segment-subtext"></div>
               </div>
+              <!-- 2 -->
               <div class="segment-label-container" style="--angle: 67.5deg;">
-                <div class="segment-label">20</div>
-                <div class="segment-subtext">SPINS</div>
+                <div class="segment-label">🎰</div>
+                <div class="segment-subtext"></div>
               </div>
+              <!-- 3 -->
               <div class="segment-label-container" style="--angle: 112.5deg;">
-                <div class="segment-label">10</div>
-                <div class="segment-subtext">SPINS</div>
+                <div class="segment-label">🕺</div>
+                <div class="segment-subtext"></div>
               </div>
+              <!-- 4 -->
               <div class="segment-label-container" style="--angle: 157.5deg;">
-                <div class="segment-label">200</div>
-                <div class="segment-subtext">SPINS</div>
+                <div class="segment-label">💵</div>
+                <div class="segment-subtext"></div>
               </div>
+              <!-- 5 -->
               <div class="segment-label-container" style="--angle: 202.5deg;">
-                <div class="segment-label">50</div>
-                <div class="segment-subtext">SPINS</div>
+                <div class="segment-label">🍀</div>
+                <div class="segment-subtext"></div>
               </div>
+              <!-- 6 -->
               <div class="segment-label-container" style="--angle: 247.5deg;">
-                <div class="segment-label">100</div>
-                <div class="segment-subtext">SPINS</div>
+                <div class="segment-label">👒</div>
+                <div class="segment-subtext"></div>
               </div>
+              <!-- 7 -->
               <div class="segment-label-container" style="--angle: 292.5deg;">
-                <div class="segment-label">10</div>
-                <div class="segment-subtext">SPINS</div>
+                <div class="segment-label">⛔️</div>
+                <div class="segment-subtext"></div>
               </div>
+              <!-- 8 -->
               <div class="segment-label-container" style="--angle: 337.5deg;">
-                <div class="segment-label">50</div>
-                <div class="segment-subtext">SPINS</div>
+                <div class="segment-label">💸</div>
+                <div class="segment-subtext"></div>
               </div>        
               <div class="center-circle">
                 <div class="center-text"></div>
@@ -218,12 +357,32 @@
       </div>
       <div class="controls-container">
           <button class="spin-button" id="spinButton">SPIN NOW</button>
-          <button class="claim-button" id="claimPrize" style="display: none;">CLAIM NOW</button>
+          <button class="claim-button" id="claimPrize" style="display: none;">WINNER!</button>
+          <div class="controls-info-container">
           <div class="result" id="resultText"></div>
           <div id="spinCounter" style="position: relative; background: rgba(5, 80, 2, 0.7); color: #fff; padding: 10px 20px; border-radius: 5px; border: 1px solid #ffffff; font-family: sans-serif; font-size: 16px;">
               Quick! Only 1000 spins remaining
           </div>
+      <div id="prizes-container-2">
+        <div id="prizes-inner-container-2">
+        <div class="prizes-header">
+          <h2>PRIZES </h2>
+        </div>
+        <div class="prizes-list">
+          <div class="prize-item"><span>🍀</span>HOLIDAY TO IRELAND</div>
+          <hr>
+          <div class="prize-item"><span>🕺</span>2 FOR 1 DAY TRIPS</div>
+          <hr>
+          <div class="prize-item"><span>💸</span>£20 GIFT VOUCHERS</div>
+          <hr>
+          <div class="prize-item"><span>💵</span>£5 GIFT VOUCHERS</div>
+          <hr>
+          <div class="prize-item"><span>👒</span>LEPRACHAUN HATS</div>
+        </div>
       </div>
+      </div>
+    </div>
+  </div>
     </div>
     <div class="right-column">
         <div class="line line-1"></div>
@@ -231,6 +390,16 @@
         <div class="line line-3"></div>
     </div>
   </div>
+<div id="tcModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2>Terms & Conditions</h2>
+    <p>
+      This game is operated by The Group Travel Company Ltd. Participation is open to individuals aged 18 and over, UK residents only. The promotion is valid until further notice and may be changed or terminated at any time.<br><br>Each entry is limited to one spin per email address. Any attempt to use multiple email addresses or to spam the system will result in disqualification and void any entries.<br><br>By signing up, you agree that Leisuretime may hold and use your data for marketing and promotional purposes. All entries are subject to verification, and prizes are non-transferable. Participation constitutes acceptance of these terms.
+    </p>
+  </div>
+</div>
+
   <script src="https://www.google.com/recaptcha/api.js" async defer></script>
   <script src="script.js"></script>
 </body>

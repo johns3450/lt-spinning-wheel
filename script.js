@@ -1,4 +1,3 @@
-// --- Existing Variable and Element Setup ---
 const wheel = document.getElementById('wheel');
 const spinButton = document.getElementById('spinButton');
 const resultText = document.getElementById('resultText');
@@ -8,13 +7,11 @@ const spinCounter = document.getElementById('spinCounter');
 const DUMMY_MODE = false; // Set to true for dummy testing, false when backend is ready.
 
 let outcomeLogged = false;
+let messageLock = false;
 
-
-// Set preload and volume settings.
 resultSound.preload = "auto";
 resultSound.volume = 0.7;
 
-// --- Set API URL Based on Environment ---
 // When testing locally, point directly to your backend; in production, use relative paths so Vercel rewrites can occur.
 let API_URL = "";
 if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
@@ -23,12 +20,62 @@ if (window.location.hostname === "localhost" || window.location.hostname === "12
   API_URL = "/api";
 }
 
-// --- Email Form Variables ---
 const emailForm = document.getElementById("email-form");
 const emailInput = document.getElementById("userEmail");
 const emailSubmit = document.getElementById("emailSubmit");
 const emailError = document.getElementById("emailError");
 let userEmail = null;  // To store the submitted email
+
+let lastEmailValue = emailInput.value.trim();
+
+// Listen for change events on the email input.
+emailInput.addEventListener("change", function() {
+  // Only reset if the captcha has been solved and the email has changed.
+  if (grecaptcha.getResponse() && emailInput.value.trim() !== lastEmailValue) {
+    lastEmailValue = emailInput.value.trim();
+    grecaptcha.reset();
+  } else {
+    // If captcha hasn't been solved yet, simply update the lastEmailValue.
+    lastEmailValue = emailInput.value.trim();
+  }
+});
+
+function positionPrizesContainer() {
+    const signupSection = document.getElementById('signup-section');
+    const prizesContainer = document.getElementById('prizes-inner-container');
+    
+    const rect = signupSection.getBoundingClientRect();
+    const gap = 20; // desired gap in pixels
+    prizesContainer.style.top = `${rect.bottom + gap}px`;
+  
+    // Now make the prizes container visible
+    prizesContainer.style.visibility = 'visible';
+  }
+  
+  window.addEventListener('load', positionPrizesContainer);
+  window.addEventListener('resize', positionPrizesContainer);
+  
+// Get modal element and trigger
+const tcModal = document.getElementById("tcModal");
+const termsLink = document.getElementById("termsLink");
+const closeBtn = document.querySelector("#tcModal .close");
+
+// Open the modal when clicking the trigger text
+termsLink.addEventListener("click", function() {
+  tcModal.style.display = "block";
+});
+
+// Close the modal when clicking the "x" button
+closeBtn.addEventListener("click", function() {
+  tcModal.style.display = "none";
+});
+
+// Also close the modal when clicking outside the modal content
+window.addEventListener("click", function(event) {
+  if (event.target === tcModal) {
+    tcModal.style.display = "none";
+  }
+});
 
 function showLoadingScreenForWheel() {
     const loadingScreen = document.getElementById("loading-screen");
@@ -127,14 +174,24 @@ async function fetchSpinCount() {
     }
 }
 
-// Update the spin counter UI.
 function updateSpinCounter() {
+    if (!messageLock) {
     const remaining = maxSpins - spinsTaken;
     spinCounter.innerHTML = `Quick! Only ${remaining} spins remaining`;
     if (remaining <= 0) {
         spinButton.disabled = true;
-        spinButton.innerText = "No Spins Left";
+        spinButton.innerText = "";
+        // Set spinButton opacity to 50%
+        spinButton.style.setProperty('opacity', '0.35', 'important');
+        // Also set the game container's opacity to 50%
+        const gameContainer = document.querySelector('.game-container');
+        if (gameContainer) {
+            gameContainer.style.setProperty('opacity', '0.35', 'important');
+        }
+                // Set the result text message to the desired message.
+                spinCounter.innerText = "The Leprechaun is tired, but there will be more Leisuretime fun and games soon! We’ll let you know when!";
     }
+}
 }
 
 // Polling to update spin count live.
@@ -150,6 +207,12 @@ leprechaunPreload.src = 'leprachaun-animation.gif';
 emailSubmit.addEventListener("click", async function() {
     const emailVal = emailInput.value.trim();
     const recaptchaResponse = grecaptcha.getResponse();
+
+        // Check if the email is in a valid format.
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) {
+            emailError.textContent = "Please enter a valid email address.";
+            return;
+        }
 
     if (!emailVal || !recaptchaResponse) {
         emailError.textContent = "Please enter your email and captcha.";
@@ -284,14 +347,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // --- Existing Segments and Animation Variables ---
 const segments = [
-  { label: 'No Win', chance: 20, winning: false },
-  { label: '20', chance: 1 },
-  { label: '10', chance: 1 },
-  { label: '200', chance: 300 },
-  { label: '50', chance: 5 },
-  { label: '100', chance: 5 },
-  { label: '10', chance: 5 },
-  { label: 'Spin Again', chance: 20, spinAgain: true }
+  // 7
+  { label: 'No Win', chance: 33.33, winning: false },
+  // 8
+  { label: '£20 Gift Voucher', chance: 5.55 },
+  // 1
+  { label: '1 Entry For Holiday to Ireland Draw', chance: 5.55 },
+  // 2
+  { label: 'Spin Again', chance: 33.33, spinAgain: true },
+  // 3
+  { label: '2 For 1 Day Trip', chance: 5.55 },
+  // 4
+  { label: '£5 Gift Voucher', chance: 5.55 },
+  // 5
+  { label: '10 Entries For Holiday to Ireland Draw', chance: 5.55 },
+  // 6
+  { label: 'Leprachaun Hat', chance: 5.55 }
 ];
 
 let currentAngle = 0;
@@ -301,8 +372,8 @@ let startTimeSpin = 0;
 let duration = 6000;
 let lastTickIndex = 0;
 
-resultText.innerHTML = "Everyones and winner! <br> Take a SPIN to WIN!";
-resultText.style.display = "block";
+resultText.innerHTML = "Take a SPIN to WIN!";
+resultText.style.display = "none";
 
 // --- Updated spinWheel() Function (with Backend Integration) ---
 async function spinWheel() {
@@ -332,7 +403,7 @@ async function spinWheel() {
     });
 
     if (spinsTaken >= maxSpins) {
-      spinButton.style.display = "none";
+        spinButton.style.setProperty('opacity', '0.35', 'important');
     }
 
     isSpinning = true;
@@ -408,19 +479,21 @@ function animateSpin(timestamp) {
 
         if (!outcomeLogged) {
             if (finalSegment.spinAgain) {
-                resultText.innerText = "Spin Again!";
+                resultText.innerText = "";
                 spinButton.innerText = "SPIN AGAIN";
                 spinButton.style.display = "inline-block";
                 canSpin = true;
             } else if (finalSegment.winning === false) {
                 // Non-winning segment: show message and do not log outcome
-                resultText.innerText = "No win this time!";
-                spinButton.style.display = "none";
+                spinCounter.innerText = "Sorry, no win this time, but plenty more chances to win coming soon!";
+                spinButton.style.setProperty('opacity', '0.35', 'important');
                 claimPrize.style.display = "none";
+                messageLock = true;
             } else {
-                resultText.innerText = `You've unlocked ${finalSegment.label} Free Spins & more!`;
+                spinCounter.innerText = `You've won ${finalSegment.label}! We'll be in touch to help you claim your prize.`;
                 spinButton.style.display = "none";
                 claimPrize.style.display = "inline-block";
+                messageLock = true;
           
                 // Log the outcome to the backend.
                 fetch(`${API_URL}/logOutcome`, {
@@ -487,7 +560,7 @@ function animateSpin(timestamp) {
           }
           
 
-        resultText.style.display = "block";
+        resultText.style.display = "none";
 
         setTimeout(() => {
             resultSound.currentTime = 0;
@@ -495,10 +568,10 @@ function animateSpin(timestamp) {
         }, 100);
 
         claimPrize.classList.add("flashing");
-        resultText.classList.add("flashing");
+        spinCounter.classList.add("flashing");
 
         setTimeout(() => {
-            resultText.classList.remove("flashing");
+            spinCounter.classList.remove("flashing");
         }, 2400);
 
         setTimeout(() => {
