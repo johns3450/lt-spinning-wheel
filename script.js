@@ -20,6 +20,16 @@ if (window.location.hostname === "localhost" || window.location.hostname === "12
   API_URL = "/api";
 }
 
+window.addEventListener('blur', () => {
+  spinSound.muted = true;
+  resultSound.muted = true;
+});
+
+window.addEventListener('focus', () => {
+  spinSound.muted = false;
+  resultSound.muted = false;
+});
+
 const emailForm = document.getElementById("email-form");
 const emailInput = document.getElementById("userEmail");
 const emailSubmit = document.getElementById("emailSubmit");
@@ -177,7 +187,7 @@ async function fetchSpinCount() {
 function updateSpinCounter() {
     if (!messageLock) {
     const remaining = maxSpins - spinsTaken;
-    spinCounter.innerHTML = `Ah, sure, quick now! Only ${remaining} spins remain.`;
+    spinCounter.innerHTML = `Ah sure, quick now! Only ${remaining} spins remain.`;
     if (remaining <= 0) {
         spinButton.disabled = true;
         spinButton.innerText = "";
@@ -485,7 +495,7 @@ function animateSpin(timestamp) {
                 canSpin = true;
             } else if (finalSegment.winning === false) {
                 // Non-winning segment: show message and do not log outcome
-                spinCounter.innerText = "Ah, sure, no win this time, but don’t you worry—there’s plenty more chances for a bit o’ luck comin’ soon!";
+                spinCounter.innerText = "Ah sure, no win this time. But don’t you worry, there’s plenty more chances for a bit o’ luck coming your way soon!";
                 spinButton.style.setProperty('opacity', '0.35', 'important');
                 claimPrize.style.display = "none";
                 messageLock = true;
