@@ -1075,3 +1075,9 @@ pointer-events: none;
   margin-bottom: 20px;
   text-align: center;
 }
+
+#spinCounter {
+  transform: translateX(-50%);
+  left: 50%;
+  width: 100%;
+}

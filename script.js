@@ -177,7 +177,7 @@ async function fetchSpinCount() {
 function updateSpinCounter() {
     if (!messageLock) {
     const remaining = maxSpins - spinsTaken;
-    spinCounter.innerHTML = `Quick! Only ${remaining} spins remaining`;
+    spinCounter.innerHTML = `Ah, sure, quick now! Only ${remaining} spins remain.`;
     if (remaining <= 0) {
         spinButton.disabled = true;
         spinButton.innerText = "";
@@ -189,7 +189,7 @@ function updateSpinCounter() {
             gameContainer.style.setProperty('opacity', '0.35', 'important');
         }
                 // Set the result text message to the desired message.
-                spinCounter.innerText = "The Leprechaun is tired, but there will be more Leisuretime fun and games soon! We’ll let you know when!";
+                spinCounter.innerText = "The Leprechaun's spent his luck for now, but there's plenty more Leisuretime craic and games comin' soon! We'll give ye a shout when it's all set!";
     }
 }
 }
@@ -485,12 +485,12 @@ function animateSpin(timestamp) {
                 canSpin = true;
             } else if (finalSegment.winning === false) {
                 // Non-winning segment: show message and do not log outcome
-                spinCounter.innerText = "Sorry, no win this time, but plenty more chances to win coming soon!";
+                spinCounter.innerText = "Ah, sure, no win this time, but don’t you worry—there’s plenty more chances for a bit o’ luck comin’ soon!";
                 spinButton.style.setProperty('opacity', '0.35', 'important');
                 claimPrize.style.display = "none";
                 messageLock = true;
             } else {
-                spinCounter.innerText = `You've won ${finalSegment.label}! We'll be in touch to help you claim your prize.`;
+                spinCounter.innerHTML = `You've bagged <strong>${finalSegment.label}</strong>! We'll be in touch soon to help ye claim yer prize, so it is.`;
                 spinButton.style.display = "none";
                 claimPrize.style.display = "inline-block";
                 messageLock = true;
