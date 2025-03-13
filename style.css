@@ -246,7 +246,7 @@ body:not(.loading) * {
   transform: translateX(-50%);
   width: 165px;
   height: 30px;
-  background: #ffffffd6;
+  background: #ffffff;
   clip-path: polygon(0% 0%, 100% 0%, 90% 100%, 10% 100%);
   z-index: 1;
 }
@@ -940,8 +940,8 @@ pointer-events: none;
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(255, 255, 255, 0.75);
-  padding: 20px;
+  background: rgba(255, 255, 255, 0);
+  padding: 0px;
   border-radius: 15px;
   z-index: 20000;
   width: 90%;
@@ -950,6 +950,12 @@ pointer-events: none;
   justify-content: center;
   flex-direction: column;
 }
+
+#prizes-inner-content {
+  background: rgba(255, 255, 255, 0.75);
+  padding: 15px;
+  border-radius: 20px;
+} 
 
 #prizes-inner-container-2 {
   position: absolute;
@@ -964,6 +970,12 @@ pointer-events: none;
   display: flex;
   justify-content: center;
   flex-direction: column;
+}
+
+#prizes-inner-container::after {
+  content: "";
+  display: block;
+  height: 15px;
 }
 
 .prizes-header {
