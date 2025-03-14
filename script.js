@@ -496,6 +496,7 @@ function animateSpin(timestamp) {
             } else if (finalSegment.winning === false) {
                 // Non-winning segment: show message and do not log outcome
                 spinCounter.innerText = "Ah sure, no win this time. But don’t you worry, there’s plenty more chances for a bit o’ luck coming your way soon!";
+                spinButton.innerText = "NO WIN 😔";
                 spinButton.style.setProperty('opacity', '0.35', 'important');
                 claimPrize.style.display = "none";
                 messageLock = true;
@@ -570,23 +571,27 @@ function animateSpin(timestamp) {
           }
           
 
-        resultText.style.display = "none";
+          resultText.style.display = "none";
 
-        setTimeout(() => {
-            resultSound.currentTime = 0;
-            resultSound.play().catch(error => console.warn("Result sound blocked:", error));
-        }, 100);
-
-        claimPrize.classList.add("flashing");
-        spinCounter.classList.add("flashing");
-
-        setTimeout(() => {
-            spinCounter.classList.remove("flashing");
-        }, 2400);
-
-        setTimeout(() => {
-            claimPrize.classList.remove("flashing");
-        }, 800);
+          setTimeout(() => {
+              resultSound.currentTime = 0;
+              resultSound.play().catch(error => console.warn("Result sound blocked:", error));
+          }, 100);
+          
+          // Only flash the results box if the outcome is winning (and not "spin again")
+          if (finalSegment && finalSegment.winning !== false && !finalSegment.spinAgain) {
+              spinCounter.classList.add("flashing");
+              setTimeout(() => {
+                  spinCounter.classList.remove("flashing");
+              }, 2400);
+          }
+          
+          // Keep the button's flashing animation unchanged.
+          claimPrize.classList.add("flashing");
+          setTimeout(() => {
+              claimPrize.classList.remove("flashing");
+          }, 800);
+          
     }
 }
 
